@@ -1,0 +1,141 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Submit Product Info</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(135deg, #ffffff, #ff4b4b);
+      font-family: 'Segoe UI', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+    }
+
+    .logo {
+      width: 250px;
+      margin-bottom: 20px;
+    }
+
+    .form-container {
+      background: #ffffffdd;
+      padding: 2rem 3rem;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      max-width: 400px;
+      width: 90%;
+    }
+
+    .form-container h2 {
+      margin-bottom: 1.5rem;
+      color: #222;
+      text-align: center;
+    }
+
+    .form-container input,
+    .form-container select {
+      width: 100%;
+      padding: 0.8rem;
+      margin-bottom: 1rem;
+      border: 1px solid #bbb;
+      border-radius: 8px;
+      font-size: 1rem;
+      box-sizing: border-box;
+    }
+
+    .form-container select {
+      background-color: #fff;
+      color: #333;
+      appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      line-height: 1.2;
+      background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22gray%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cpath%20d%3D%22M7%2010l5%205%205-5z%22/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 1rem center;
+      background-size: 1rem;
+    }
+
+    .form-container button {
+      width: 100%;
+      padding: 0.9rem;
+      background: linear-gradient(90deg, #ff4b4b, #e60000);
+      color: #fff;
+      border: none;
+      font-size: 1rem;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .form-container button:hover {
+      background: linear-gradient(90deg, #cc0000, #b30000);
+    }
+
+    .success {
+      margin-top: 1rem;
+      text-align: center;
+      color: green;
+    }
+
+    @media (max-width: 500px) {
+      .logo {
+        width: 200px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <img src="https://cdn.discordapp.com/attachments/1386008593450537040/1386008608252231741/image.png?ex=6858249b&is=6856d31b&hm=a0b5c22ed47b30c6b39a1aa8068ca41b28fb41baf9755732166c5f960d4a2f48&" alt="Qawn Logo" class="logo" />
+
+  <div class="form-container">
+    <h2>Qawn Qs</h2>
+    <form id="productForm">
+      <input type="tel" name="number" placeholder="Number" required />
+
+      <select name="qs" required>
+        <option value="" disabled selected>Select Qs</option>
+        <option value="300">300</option>
+        <option value="100">100</option>
+        <option value="50">50</option>
+      </select>
+
+      <input type="text" name="stars" placeholder="Stars Name" required />
+      <button type="submit">Submit</button>
+      <div id="response" class="success"></div>
+    </form>
+    <button type="button" onclick="printSheet()">Print (Excel Sheet)</button>
+  </div>
+
+  <script>
+    function printSheet() {
+      const sheetURL = 'https://docs.google.com/spreadsheets/d/16MUqp19AaSxb8hAaQM4eef0RjJsRypaDm5JIo4D1DZI/edit?gid=0#gid=0';
+      window.open(sheetURL, '_blank');
+    }
+
+    document.getElementById('productForm').addEventListener('submit', async function (e) {
+      e.preventDefault();
+      const form = e.target;
+      const formData = new FormData(form);
+      const queryString = new URLSearchParams(formData).toString();
+      const webhookURL = "https://script.google.com/macros/s/AKfycbwK9Ym2ozRTLlu-T5WqCnyXAKuZe3OYPdOTYmQex6qdQPEq7d5-P--C97m_Olzc-tFx/exec";
+      try {
+        const response = await fetch(`${webhookURL}?${queryString}`, { method: 'POST' });
+        const text = await response.text();
+        document.getElementById('response').textContent = "Submitted Successfully!";
+        form.reset();
+      } catch (err) {
+        document.getElementById('response').textContent = "Error submitting. Try again.";
+      }
+    });
+  </script>
+
+</body>
+</html>
